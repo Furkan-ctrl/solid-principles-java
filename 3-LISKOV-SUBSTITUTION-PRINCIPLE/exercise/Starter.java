@@ -2,16 +2,29 @@
 // contract. Redesign so substituting Square for Rectangle can never surprise
 // a caller. See README.md in this folder for the full task and requirements.
 
-class Rectangle {
-    protected int width;
-    protected int height;
+interface Shape{
+    int getArea();
+}
 
-    public void setWidth(int width) {
+class Rectangle implements Shape{
+    private int width;
+    private int height;
+
+    public Rectangle(int width, int height){
+        if(width < 0 || height < 0)
+        {
+            throw new IllegalArgumentException("Dimensions must be positive");
+        }
         this.width = width;
+        this.height = height;
     }
 
-    public void setHeight(int height) {
-        this.height = height;
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public int getArea() {
@@ -19,28 +32,39 @@ class Rectangle {
     }
 }
 
-class Square extends Rectangle {
-    @Override
-    public void setWidth(int width) {
-        this.width = width;
-        this.height = width; // forces height to match width
+class Square implements Shape {
+    private int side;
+
+    public Square(int side){
+        if(side < 0)
+        {
+            throw new IllegalArgumentException("Side should be positive");
+        }
+
+        this.side = side;
+    }
+
+    public int getSide() {
+        return side;
     }
 
     @Override
-    public void setHeight(int height) {
-        this.width = height;
-        this.height = height;
+    public int getArea() {
+        return side * side;
     }
 }
 
 public class Starter {
-    public static void main(String[] args) {
-        Rectangle rect = new Square();
-        rect.setWidth(5);
-        rect.setHeight(10);
 
-        // A caller of Rectangle expects independent width/height -> area 50.
-        // A Square can't honor that -> area is actually 100.
-        System.out.println("Expected 50, got: " + rect.getArea());
+    public static void printArea(Shape shape) {
+        System.out.println("Area: " + shape.getArea());
+    }
+
+    public static void main(String[] args) {
+        Shape rectangle = new Rectangle(5, 10);
+        Shape square = new Square(5);
+
+        printArea(rectangle);
+        printArea(square);
     }
 }
